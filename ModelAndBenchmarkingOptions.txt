@@ -1,0 +1,86 @@
+## Why TorchVision MobileNetV2 is the Best Single Model for Cross-Framework Edge Benchmarking
+
+### Executive Summary
+
+MobileNetV2 (TorchVision, ImageNet-1k) is the most practical model choice to benchmark TensorRT, OpenVINO, TensorFlow Lite, and ExecuTorch. 
+It’s (1) architected for mobile/edge efficiency, (2) pretrained, and (3) easy to export and run across all four runtimes. 
+These traits let you isolate runtime differences (engines, kernels, quantization) minimizing the encounter of model-conversion issues.
+
+### Selection Criteria & How MobileNetV2 Satisfies Them
+1) Edge-oriented architecture (speed/size with acceptable accuracy)
+
+MobileNetV2 introduces inverted residuals + linear bottlenecks and relies on convolutions which permits reduction of computation for on-device inference while maintaining accuracy. 
+In the standard 224×224 setting it operates at ~300M multiply-adds with a small parameter count (aprox. 3–4M), making it ideal for Jetsons/CPUs. 
+
+2) Pretrained
+
+TorchVision provides official pretrained weights and built-in inference transforms (resize→center-crop→normalize), and offers a preprocessing process you can 
+mirror in every runtime for fair comparisons.
+
+3) Export
+
+Use ONNX to deploy the PyTorch model to TensorRT/OpenVINO, torch.export for ExecuTorch, and a functionally equivalent Keras MobileNetV2 for TFLite; 
+Note to report any small accuracy differences due to weight sources.
+
+4) Quantization-friendliness across ecosystems
+
+TensorRT (INT8), OpenVINO (PTQ), and TFLite (post-training quantization) all support straightforward INT8 workflows; 
+MobileNet ops quantize well, enabling a precise study of accuracy-vs-latency/size trade-offs. 
+
+## Methodology
+
+What to do? : Load TorchVision MobileNetV2. Export to ONNX for TensorRT/OpenVINO and to ExecuTorch via torch.export. TFLite from the Keras MobileNetV2 path.
+
+Dataset: Use ImageNet-1k (ILSVRC 2012) validation set (50k images); can also evaluate a fixed, stratified subset (e.g., 5k). 
+
+Precisions: Running MobileNetV2 at FP16/FP32/INT8 on TensorRT/TFLite/OpenVINO/ExecuTorch.
+
+Metrics: Report median/percentile latency, throughput, model size, load time, and accuracy. 
+OpenVINO’s benchmark_app and TensorRT’s trtexec provide ready-made timing outputs. 
+
+# Things to look out for
+
+A) Preprocessing: Replicate TorchVision’s MobileNetV2 transforms (resize, center-crop, normalize) in every runtime to keep accuracy comparable. 
+
+B) Quantization variance: Use the same calibration/representative set across TensorRT/OpenVINO/TFLite to make INT8 comparisons fair.  
+
+## Conclusion
+
+MobileNetV2 (TorchVision) is the best single model for cross-framework edge benchmarking because it exports cleanly to TensorRT, OpenVINO, TFLite, and ExecuTorch. 
+Using the same architecture and ImageNet-1k preprocessing isolates runtime differences.  
+Testing FP32/FP16/INT8 exposes clear trade-offs in latency, throughput, accuracy, and model size, giving a fair, repeatable comparison.
+
+
+
+
+
+
+
+
+
+
+Key References
+
+TorchVision MobileNetV2 docs (weights & transforms). 
+docs.pytorch.org
+
+MobileNetV2 paper: inverted residuals, depthwise separable design, efficiency trade-offs. 
+Open Access CVF
+
+PyTorch ONNX export overview. 
+docs.pytorch.org
+
+TensorRT ONNX import & trtexec usage. 
+NVIDIA Docs
+
+OpenVINO: convert ONNX→IR; benchmark_app (runs IR/ONNX). 
+docs.openvino.ai
+
+TensorFlow Lite post-training quantization guide. 
+TensorFlow
+
+ExecuTorch export and XNNPACK backend (CPU). 
+docs.pytorch.org
+
+ImageNet-1k dataset (TorchVision & ILSVRC 2012). 
+docs.pytorch.org
