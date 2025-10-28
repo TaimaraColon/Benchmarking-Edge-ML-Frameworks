@@ -3,10 +3,10 @@ import numpy as np
 import torch
 import torchvision
 from PIL import Image
-# Make sure to install: pip install imagenetv2-pytorch
+# Make sure to run: pip install git+https://github.com/modestyachts/ImageNetV2_pytorch.git in the terminal
 from imagenetv2_pytorch import ImageNetV2Dataset 
 from torch.utils.data import DataLoader
-from torchvision import transforms
+from torchvision import datasets, transforms
 
 # --- Global Configuration ---
 BATCH_SIZE = 64 
@@ -16,7 +16,7 @@ NUM_BENCHMARK = 100
 TARGET_DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # -------------------------------------------------------------
-# 🌟 METRIC 1 & 2: MODEL LOAD TIME & MODEL SIZE CALCULATION 🌟
+# METRIC 1 & 2: MODEL LOAD TIME & MODEL SIZE CALCULATION
 # -------------------------------------------------------------
 
 # Start timer for model loading
@@ -84,11 +84,11 @@ def benchmark_model(model, input_tensor, num_warmup, num_benchmark):
                 curr_time = starter.elapsed_time(ender)
                 timings.append(curr_time) # Time is in milliseconds (ms)
 
-    # --- CPU TIMING LOGIC (Fixed to prevent device mismatch) ---
+    # --- CPU TIMING LOGIC ---
     else: 
         print(f"Warming up for {num_warmup} iterations on CPU...")
         
-        # 🌟 CRITICAL FIX: Ensure the model is on CPU if the device is CPU 🌟
+        # Ensure the model is on CPU if the device is CPU
         # We explicitly move model and input to CPU for a dedicated CPU test
         model_on_cpu = model.to('cpu') 
         input_on_cpu = input_tensor.to('cpu')
@@ -115,12 +115,12 @@ def benchmark_model(model, input_tensor, num_warmup, num_benchmark):
     mean_time_ms = sum(timings) / len(timings)
     std_time_ms = torch.tensor(timings).std().item()
     
-    # 🌟 METRIC 3: MEDIAN/PERCENTILE LATENCY 🌟
+    # METRIC 3: MEDIAN/PERCENTILE LATENCY
     median_latency = np.percentile(timings, 50)
     p90_latency = np.percentile(timings, 90)
     p99_latency = np.percentile(timings, 99)
     
-    # 🌟 METRIC 4: THROUGHPUT (FPS) 🌟
+    # METRIC 4: THROUGHPUT (FPS)
     throughput_fps = 1000.0 / mean_time_ms
 
     print(f"\n--- Benchmark Results ({device_type.upper()} @ BATCH={input_tensor.shape[0]}) ---")
@@ -140,5 +140,7 @@ if __name__ == '__main__':
     print(f"Total Parameters: {total_params:,}")
     print("-----------------------------------------")
     
-    # Run the corrected benchmark function
+    # Using dummy input is the required best practice to ensure a fair and rigorous comparison.
+    # The reason a dummy input is better for this specific goal is that it completely isolates 
+    # the model's pure computation time from all other bottlenecks.
     benchmark_model(torch_model, dummy_input, NUM_WARMUP, NUM_BENCHMARK)
