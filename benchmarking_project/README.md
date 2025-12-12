@@ -70,7 +70,7 @@ Los scripts clave se encuentran en la carpeta **benchmarking_project** y se enfo
     pip install openvino==2024.6
     # La librería de TensorRT se utiliza a través de su integración nativa en PyTorch (torch.export.backend).
     ```
-2. **Ejecutar el Benchmark Completo (desde la carpeta benchmarking_proyect):**
+2. **Ejecutar el Benchmark Completo (desde la carpeta benchmarking_project):**
     ```bash
     python master_comparison.py
     ```
@@ -89,6 +89,6 @@ El benchmark demostró que la elección del framework debe ser específica para 
 
 ### Próximos Pasos Recomendados
 
-1.  **Validación en Embedded Systems:** Despliegue y medición de TensorRT en una plataforma **NVIDIA Jetson**.
+1.  **Validación en Embedded Systems:** Medición de TensorRT en una plataforma **NVIDIA Jetson**.
 2.  **Pruebas de Escalabilidad en Servidor:** Ejecutar el benchmark en un servidor de **Lambda Labs** para cuantificar el rendimiento máximo.
 3.  **Validación INT8:** Medición física de TFLite/Executorch en un dispositivo Edge de bajo consumo para validar las estimaciones.
