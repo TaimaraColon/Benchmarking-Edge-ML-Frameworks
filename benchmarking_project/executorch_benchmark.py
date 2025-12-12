@@ -6,8 +6,6 @@ import os
 # Define file path globally for cleanup
 EXECUTORCH_MODEL_PATH = "mobilenet_v2.pte"
 
-# --- HELPER FUNCTIONS (Internal to this module) ---
-
 def export_to_executorch(torch_model, config, static_metrics):
     """
     Simulates the export process from PyTorch to the Executorch format (.pte).

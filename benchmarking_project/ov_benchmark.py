@@ -126,7 +126,7 @@ def run_openvino_benchmark(config, torch_model, static_metrics):
     MODEL_FP32_IR_PATH = "mobilenet_v2_fp32.xml"
     all_ov_results = []
 
-    # 1. Static Export (Only once)
+    # 1. Static Export
     try:
         ov_model, export_time_ms = export_openvino_model(torch_model, config)
     except Exception as e:

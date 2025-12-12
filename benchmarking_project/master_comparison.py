@@ -7,8 +7,6 @@ import numpy as np
 
 # --- 1. IMPORT MODULAR COMPONENTS ---
 from static_setup import get_static_metrics
-
-# Assuming you have created and saved these refactored files:
 from pt_benchmark import run_pytorch_benchmark
 from trt_benchmark import run_tensorrt_benchmark
 from ov_benchmark import run_openvino_benchmark

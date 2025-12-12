@@ -1,15 +1,10 @@
 import time
 import numpy as np
 import os
-# No pandas, display, or torchvision imports needed here—they are in the master script.
-# The TFLite dependencies are still simulated, as in the original script.
 
 # Define file path and device name globally for use in helper/main function
 TFLITE_MODEL_PATH = "mobilenet_v2_fp32.tflite"
 TFLITE_DEVICE_NAME = "Mobile/Embedded CPU"
-
-
-# --- HELPER FUNCTIONS (Internal to this module) ---
 
 def export_to_tflite(torch_model, static_metrics):
     """

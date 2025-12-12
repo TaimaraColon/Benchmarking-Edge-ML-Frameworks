@@ -29,7 +29,7 @@ def run_pytorch_benchmark(config, torch_model, static_metrics):
         
         timings = []
         
-        # --- Run Benchmark Logic (Simplified from your original code) ---
+        # --- Run Benchmark Logic ---
         
         # Warmup
         for _ in range(NUM_WARMUP):
